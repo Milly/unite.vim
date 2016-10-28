@@ -15,6 +15,7 @@ let g:unite_source_output_shellcmd_colors =
         \ '#383838', '#ff4444', '#44ff44', '#ffb30a',
         \ '#6699ff', '#f820ff', '#4ae2e2', '#ffffff',
         \])
+call unite#util#set_default('g:unite_source_output_shellcmd_encoding', 'char')
 "}}}
 
 function! unite#sources#output_shellcmd#define() abort "{{{
@@ -129,7 +130,7 @@ function! s:source.gather_candidates(args, context) abort "{{{
     endif
     let a:context.source__proc = vimproc#plineopen2(
           \ vimproc#util#iconv(
-          \   a:context.source__command, &encoding, 'char'), 1)
+          \   a:context.source__command, &encoding, g:unite_source_output_shellcmd_encoding), 1)
   catch
     call unite#util#lcd(cwd)
     call unite#print_error(v:exception)
@@ -148,7 +149,7 @@ function! s:source.async_gather_candidates(args, context) abort "{{{
   endif
 
   let lines = map(unite#util#read_lines(stdout, 1000),
-          \ "substitute(unite#util#iconv(v:val, 'char', &encoding),
+          \ "substitute(unite#util#iconv(v:val, g:unite_source_output_shellcmd_encoding, &encoding),
           \   '\\e\\[\\u', '', 'g')")
   " echomsg string(lines)
 
